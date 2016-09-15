@@ -260,6 +260,11 @@ type Info struct {
 	// running when the daemon is shutdown or upon daemon start if
 	// running containers are detected
 	LiveRestoreEnabled bool
+	Registries         []Registry
+}
+
+type Registry struct {
+	Name string
 }
 
 // PluginsInfo is a temp struct holding Plugins name

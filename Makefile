@@ -14,6 +14,7 @@ update-deps:
 	glide-vc --only-code --no-tests
 	# see http://sed.sourceforge.net/sed1line.txt
 	find vendor -type f -exec sed -i -e :a -e '/^\n*$$/{$$d;N;ba' -e '}' "{}" \;
+	git apply engine-api.patch
 
 binary:
 	go build  -o trust-plugin .
