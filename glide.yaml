@@ -1,0 +1,24 @@
+package: github.com/projectatomic/trust-plugin
+import:
+- package: github.com/Sirupsen/logrus
+  version: ~0.10.0
+- package: github.com/containers/image
+  subpackages:
+  - docker
+  - signature
+- package: github.com/docker/distribution
+  version: ~2.5.1
+  subpackages:
+  - reference
+- package: github.com/docker/docker
+  version: ~1.12.1
+  subpackages:
+  - api
+  - reference
+- package: github.com/docker/engine-api
+  version: ~0.4.0
+  subpackages:
+  - client
+- package: github.com/docker/go-plugins-helpers
+  subpackages:
+  - authorization

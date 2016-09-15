@@ -1,0 +1,145 @@
+hash: e3d8c5290257c91027981a30769d32a844eb6da0b7f565ceae630107a8d3e01c
+updated: 2016-09-15T12:29:12.296889241+02:00
+imports:
+- name: github.com/cloudfoundry-incubator/candiedyaml
+  version: 99c3df83b51532e3615f851d8c2dbb638f5313bf
+- name: github.com/containers/image
+  version: f65b989058043bf2d3e68360ced64d9a92223bb6
+  subpackages:
+  - docker
+  - signature
+  - docker/policyconfiguration
+  - image
+  - manifest
+  - types
+  - transports
+  - version
+  - directory
+  - oci/layout
+  - openshift
+  - directory/explicitfilepath
+- name: github.com/coreos/go-systemd
+  version: b4a58d95188dd092ae20072bac14cece0e67c388
+  subpackages:
+  - activation
+  - dbus
+  - util
+- name: github.com/docker/distribution
+  version: 12acdf0a6c1e56d965ac6eb395d2bce687bf22fc
+  subpackages:
+  - reference
+  - digest
+  - context
+  - uuid
+- name: github.com/docker/docker
+  version: 23cf638307f030cd8d48c9efc21feec18a6f88f8
+  subpackages:
+  - api
+  - reference
+  - pkg/homedir
+  - pkg/ioutils
+  - pkg/system
+  - image
+  - image/v1
+  - pkg/authorization
+  - pkg/longpath
+  - layer
+  - pkg/plugins
+  - daemon/graphdriver
+  - pkg/archive
+  - pkg/idtools
+  - pkg/stringid
+  - pkg/plugins/transport
+  - pkg/chrootarchive
+  - pkg/mount
+  - pkg/fileutils
+  - pkg/pools
+  - pkg/promise
+  - pkg/random
+  - pkg/reexec
+- name: github.com/docker/engine-api
+  version: 3d1601b9d2436a70b0dfc045a23f6503d19195df
+  subpackages:
+  - client
+  - types
+  - client/transport
+  - client/transport/cancellable
+  - types/container
+  - types/filters
+  - types/network
+  - types/reference
+  - types/registry
+  - types/swarm
+  - types/time
+  - types/versions
+  - types/blkiodev
+  - types/strslice
+- name: github.com/docker/go-connections
+  version: 988efe982fdecb46f01d53465878ff1f2ff411ce
+  subpackages:
+  - sockets
+  - tlsconfig
+  - nat
+- name: github.com/docker/go-plugins-helpers
+  version: 8f6a7e66062c5a7d19174e8ecfbe1befbb38b676
+  subpackages:
+  - authorization
+  - sdk
+- name: github.com/docker/go-units
+  version: f2145db703495b2e525c59662db69a7344b00bb8
+- name: github.com/docker/libtrust
+  version: fa567046d9b14f6aa788882a950d69651d230b21
+- name: github.com/ghodss/yaml
+  version: aa0c862057666179de291b67d9f093d12b5a8473
+- name: github.com/golang/glog
+  version: 44145f04b68cf362d9c4df2182967c2275eaefed
+- name: github.com/gorilla/context
+  version: 14f550f51af52180c2eefed15e5fd18d63c0a64a
+- name: github.com/gorilla/mux
+  version: e444e69cbd2e2e3e0749a2f3c717cec491552bbf
+- name: github.com/imdario/mergo
+  version: 50d4dbd4eb0e84778abe37cefef140271d96fade
+- name: github.com/Microsoft/go-winio
+  version: ce2922f643c8fd76b46cadc7f404a06282678b34
+- name: github.com/mtrmac/gpgme
+  version: 7486dcd030936581e863bb69602ef411920d7fc9
+- name: github.com/opencontainers/image-spec
+  version: 55a3d9e790c326458a7ee7ce12cdfb70a455c652
+  subpackages:
+  - specs-go/v1
+  - specs-go
+- name: github.com/opencontainers/runc
+  version: b1e602e8ba592a663a4eb63ed9c18d6b2b475fec
+  subpackages:
+  - libcontainer/user
+- name: github.com/Sirupsen/logrus
+  version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
+- name: github.com/vbatts/tar-split
+  version: 6810cedb21b2c3d0b9bb8f9af12ff2dc7a2f14df
+  subpackages:
+  - tar/asm
+  - tar/storage
+  - archive/tar
+- name: golang.org/x/net
+  version: 4876518f9e71663000c348837735820161a42df7
+  subpackages:
+  - context
+  - context/ctxhttp
+  - http2
+  - http2/hpack
+  - internal/timeseries
+  - trace
+  - proxy
+- name: golang.org/x/sys
+  version: 30de6d19a3bd89a5f38ae4028e23aaa5582648af
+  subpackages:
+  - unix
+  - windows
+- name: k8s.io/kubernetes
+  version: f59cebd1c29dc543ad2fbd8ecdc6e8ad19c89f19
+  subpackages:
+  - pkg/util/errors
+  - pkg/util/homedir
+  - pkg/util/net
+  - pkg/util/sets
+testImports: []
