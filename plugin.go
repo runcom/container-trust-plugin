@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -19,6 +20,7 @@ import (
 	dockerapi "github.com/docker/docker/api"
 	"github.com/docker/docker/reference"
 	dockerclient "github.com/docker/engine-api/client"
+	engineapitypes "github.com/docker/engine-api/types"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-plugins-helpers/authorization"
 )
@@ -78,6 +80,7 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 		if err != nil {
 			return authorization.Response{Err: err.Error()}
 		}
+
 		var isByDigest bool
 		if res[4] != "" {
 			// The "tag" could actually be a digest.
@@ -174,7 +177,26 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 					return authorization.Response{Err: fmt.Sprintf("digests mismatch, provided %s, computed %s", res[4], digest)}
 				}
 			} else {
-				return authorization.Response{Err: fmt.Sprintf("image is allowed but can't pull by tag. Pull the image with 'docker pull %s@%s' and tag it with 'docker tag %s@%s %s:%s'", res[2], digest, res[2], digest, res[2], res[4])}
+				newRef, err := reference.ParseNamed(res[2] + "@" + digest)
+				if err != nil {
+					return authorization.Response{Err: err.Error()}
+				}
+				// TODO(runcom): fix the last arg to provide authconfig and requestprivilegdfunc in the options
+				r, err := p.client.ImagePull(context.Background(), newRef.String(), engineapitypes.ImagePullOptions{})
+				if err != nil {
+					return authorization.Response{Err: err.Error()}
+				}
+				// Should wait for pull to finish streaming
+				_, err = ioutil.ReadAll(r)
+				if err != nil {
+					return authorization.Response{Err: err.Error()}
+				}
+				r.Close()
+
+				if err := p.client.ImageTag(context.Background(), newRef.String(), res[2]+":"+res[4]); err != nil {
+					return authorization.Response{Err: err.Error()}
+				}
+				goto allow
 			}
 		}
 		goto noallow
