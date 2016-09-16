@@ -57,7 +57,7 @@ func newPlugin(dockerHost, certPath string, tlsVerify bool) (*trustPlugin, error
 }
 
 var (
-	pullRegExp = regexp.MustCompile(`/images/create(\?fromImage=(.*)(&tag=(.*)?))?$`)
+	pullRegExp = regexp.MustCompile(`/images/create(\?fromImage=([^&]*)(&tag=(.*)?)?)?$`)
 )
 
 type trustPlugin struct {
@@ -174,7 +174,7 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 					return authorization.Response{Err: fmt.Sprintf("digests mismatch, provided %s, computed %s", res[4], digest)}
 				}
 			} else {
-				return authorization.Response{Err: fmt.Sprintf("image is trusted but can't pull by tag. Pull the image with 'docker pull %s@%s' and tag it with 'docker tag %s@%s %s:%s'", res[2], digest, res[2], digest, res[4])}
+				return authorization.Response{Err: fmt.Sprintf("image is allowed but can't pull by tag. Pull the image with 'docker pull %s@%s' and tag it with 'docker tag %s@%s %s:%s'", res[2], digest, res[2], digest, res[2], res[4])}
 			}
 		}
 		goto noallow
@@ -183,7 +183,7 @@ allow:
 	return authorization.Response{Allow: true}
 
 noallow:
-	return authorization.Response{Msg: "image isn't trusted"}
+	return authorization.Response{Msg: "image isn't allowed"}
 }
 
 func (p *trustPlugin) AuthZRes(req authorization.Request) authorization.Response {
