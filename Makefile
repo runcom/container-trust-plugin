@@ -3,6 +3,7 @@ export GOPATH:=$(CURDIR)/Godeps/_workspace:$(GOPATH)
 
 LIBDIR=${DESTDIR}/lib/systemd/system
 BINDIR=${DESTDIR}/usr/libexec/docker/
+CONFDIR=${DESTDIR}/etc/docker
 CONTAINERSDIR=${DESTDIR}/etc/containers
 PREFIX ?= ${DESTDIR}/usr
 MANINSTALLDIR=${PREFIX}/share/man
@@ -24,6 +25,8 @@ man:
 	go-md2man -in man/trust-plugin.8.md -out trust-plugin.8
 
 install:
+	install -d -m 0755 ${CONFDIR}
+	install -m 644 trust-plugin.yaml ${CONFDIR}/trust-plugin.yaml
 	install -d -m 0755 ${CONTAINERSDIR}
 	install -m 644 default-policy.json ${CONTAINERSDIR}/policy.json
 	install -d -m 0755 ${LIBDIR}

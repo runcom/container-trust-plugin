@@ -1,0 +1,23 @@
+{
+    "default": [
+        {
+            "type": "reject"
+        }
+    ],
+    "transports": {
+	"docker": {
+		"registry.access.redhat.com/rhel7": [
+			{
+				"type": "insecureAcceptAnything"
+			}
+		],
+		"registry.access.redhat.com": [
+			{
+				"type": "signedBy",
+				"keyType": "GPGKeys",
+				"keyPath": "/home/amurdaca/.gnupg/secring.gpg"
+			}
+		]
+	}
+    }
+}

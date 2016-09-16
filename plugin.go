@@ -2,12 +2,10 @@ package main
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -25,11 +23,12 @@ import (
 	engineapitypes "github.com/docker/engine-api/types"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-plugins-helpers/authorization"
+	"gopkg.in/yaml.v2"
 )
 
 type conf struct {
-	Enabled  bool
-	AutoPull bool
+	Enabled  bool `yaml:"enabled"`
+	AutoPull bool `yaml:"autopull"`
 }
 
 const (
@@ -37,14 +36,12 @@ const (
 )
 
 func newPlugin(dockerHost, certPath string, tlsVerify bool) (*trustPlugin, error) {
-	confFile, err := os.Open(pluginConfPath)
+	confFile, err := ioutil.ReadFile(pluginConfPath)
 	if err != nil {
 		return nil, err
 	}
-	defer confFile.Close()
-
 	var config conf
-	if err := json.NewDecoder(confFile).Decode(&config); err != nil {
+	if err := yaml.Unmarshal(confFile, &config); err != nil {
 		return nil, err
 	}
 	c := &http.Client{}
