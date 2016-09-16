@@ -12,7 +12,9 @@ import (
 	"golang.org/x/net/context"
 
 	"github.com/containers/image/docker"
+	"github.com/containers/image/manifest"
 	"github.com/containers/image/signature"
+	"github.com/docker/distribution/digest"
 	distreference "github.com/docker/distribution/reference"
 	dockerapi "github.com/docker/docker/api"
 	"github.com/docker/docker/reference"
@@ -76,11 +78,22 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 		if err != nil {
 			return authorization.Response{Err: err.Error()}
 		}
+		var isByDigest bool
 		if res[4] != "" {
-			ref, err = reference.WithTag(ref, res[4])
+			// The "tag" could actually be a digest.
+			var dgst digest.Digest
+			dgst, err = digest.ParseDigest(res[4])
+			if err == nil {
+				ref, err = reference.WithDigest(ref, dgst)
+				isByDigest = true
+			} else {
+				ref, err = reference.WithTag(ref, res[4])
+			}
 			if err != nil {
 				return authorization.Response{Err: err.Error()}
 			}
+		} else {
+			return authorization.Response{Err: "unable to verify all tags for the given image"}
 		}
 		if reference.IsNameOnly(ref) {
 			ref = reference.WithDefaultTag(ref)
@@ -145,8 +158,24 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 		if err != nil {
 			return authorization.Response{Err: err.Error()}
 		}
+		d, _, err := img.Manifest()
+		if err != nil {
+			return authorization.Response{Err: err.Error()}
+		}
+		digest, err := manifest.Digest(d)
+		if err != nil {
+			return authorization.Response{Err: err.Error()}
+		}
 		if allowed {
-			goto allow
+			if isByDigest {
+				if res[4] == digest {
+					goto allow
+				} else {
+					return authorization.Response{Err: fmt.Sprintf("digests mismatch, provided %s, computed %s", res[4], digest)}
+				}
+			} else {
+				return authorization.Response{Err: fmt.Sprintf("image is trusted but can't pull by tag. Pull the image with 'docker pull %s@%s' and tag it with 'docker tag %s@%s %s:%s'", res[2], digest, res[2], digest, res[4])}
+			}
 		}
 		goto noallow
 	}

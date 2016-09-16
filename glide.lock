@@ -1,16 +1,16 @@
 hash: e3d8c5290257c91027981a30769d32a844eb6da0b7f565ceae630107a8d3e01c
-updated: 2016-09-15T12:29:12.296889241+02:00
+updated: 2016-09-16T11:16:46.806147021+02:00
 imports:
 - name: github.com/cloudfoundry-incubator/candiedyaml
   version: 99c3df83b51532e3615f851d8c2dbb638f5313bf
 - name: github.com/containers/image
-  version: f65b989058043bf2d3e68360ced64d9a92223bb6
+  version: 2efc244b5ebdfe66b6a4377c6b405fe33e7dd948
   subpackages:
   - docker
   - signature
+  - manifest
   - docker/policyconfiguration
   - image
-  - manifest
   - types
   - transports
   - version
@@ -104,7 +104,7 @@ imports:
 - name: github.com/mtrmac/gpgme
   version: 7486dcd030936581e863bb69602ef411920d7fc9
 - name: github.com/opencontainers/image-spec
-  version: 55a3d9e790c326458a7ee7ce12cdfb70a455c652
+  version: d1383212031d6f6aa55790a710cb04e29863741b
   subpackages:
   - specs-go/v1
   - specs-go
@@ -136,7 +136,7 @@ imports:
   - unix
   - windows
 - name: k8s.io/kubernetes
-  version: f59cebd1c29dc543ad2fbd8ecdc6e8ad19c89f19
+  version: c3374a0d49b892b858550fadb14fee87272db704
   subpackages:
   - pkg/util/errors
   - pkg/util/homedir
