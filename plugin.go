@@ -2,10 +2,12 @@ package main
 
 import (
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -25,7 +27,26 @@ import (
 	"github.com/docker/go-plugins-helpers/authorization"
 )
 
+type conf struct {
+	Enabled  bool
+	AutoPull bool
+}
+
+const (
+	pluginConfPath = "/etc/docker/trust-plugin.yaml"
+)
+
 func newPlugin(dockerHost, certPath string, tlsVerify bool) (*trustPlugin, error) {
+	confFile, err := os.Open(pluginConfPath)
+	if err != nil {
+		return nil, err
+	}
+	defer confFile.Close()
+
+	var config conf
+	if err := json.NewDecoder(confFile).Decode(&config); err != nil {
+		return nil, err
+	}
 	c := &http.Client{}
 	if certPath != "" {
 		tlsc := &tls.Config{}
@@ -55,7 +76,7 @@ func newPlugin(dockerHost, certPath string, tlsVerify bool) (*trustPlugin, error
 	if err != nil {
 		return nil, err
 	}
-	return &trustPlugin{client: client}, nil
+	return &trustPlugin{client: client, config: config}, nil
 }
 
 var (
@@ -63,6 +84,7 @@ var (
 )
 
 type trustPlugin struct {
+	config conf
 	client *dockerclient.Client
 }
 
@@ -177,26 +199,30 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 					return authorization.Response{Err: fmt.Sprintf("digests mismatch, provided %s, computed %s", res[4], digest)}
 				}
 			} else {
-				newRef, err := reference.ParseNamed(res[2] + "@" + digest)
-				if err != nil {
-					return authorization.Response{Err: err.Error()}
-				}
-				// TODO(runcom): fix the last arg to provide authconfig and requestprivilegdfunc in the options
-				r, err := p.client.ImagePull(context.Background(), newRef.String(), engineapitypes.ImagePullOptions{})
-				if err != nil {
-					return authorization.Response{Err: err.Error()}
-				}
-				// Should wait for pull to finish streaming
-				_, err = ioutil.ReadAll(r)
-				if err != nil {
-					return authorization.Response{Err: err.Error()}
-				}
-				r.Close()
+				if p.config.AutoPull {
+					newRef, err := reference.ParseNamed(res[2] + "@" + digest)
+					if err != nil {
+						return authorization.Response{Err: err.Error()}
+					}
+					// TODO(runcom): fix the last arg to provide authconfig and requestprivilegdfunc in the options
+					r, err := p.client.ImagePull(context.Background(), newRef.String(), engineapitypes.ImagePullOptions{})
+					if err != nil {
+						return authorization.Response{Err: err.Error()}
+					}
+					// Should wait for pull to finish streaming
+					_, err = ioutil.ReadAll(r)
+					if err != nil {
+						return authorization.Response{Err: err.Error()}
+					}
+					r.Close()
 
-				if err := p.client.ImageTag(context.Background(), newRef.String(), res[2]+":"+res[4]); err != nil {
-					return authorization.Response{Err: err.Error()}
+					if err := p.client.ImageTag(context.Background(), newRef.String(), res[2]+":"+res[4]); err != nil {
+						return authorization.Response{Err: err.Error()}
+					}
+					goto allow
+				} else {
+					return authorization.Response{Err: fmt.Sprintf("image is allowed but can't pull by tag. Pull the image with 'docker pull %s@%s' and tag it with 'docker tag %s@%s %s:%s'", res[2], digest, res[2], digest, res[2], res[4])}
 				}
-				goto allow
 			}
 		}
 		goto noallow
