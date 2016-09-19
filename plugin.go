@@ -20,15 +20,13 @@ import (
 	dockerapi "github.com/docker/docker/api"
 	"github.com/docker/docker/reference"
 	dockerclient "github.com/docker/engine-api/client"
-	engineapitypes "github.com/docker/engine-api/types"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-plugins-helpers/authorization"
 	"gopkg.in/yaml.v2"
 )
 
 type conf struct {
-	Enabled  bool `yaml:"enabled"`
-	AutoPull bool `yaml:"autopull"`
+	Enabled bool `yaml:"enabled"`
 }
 
 const (
@@ -77,7 +75,7 @@ func newPlugin(dockerHost, certPath string, tlsVerify bool) (*trustPlugin, error
 }
 
 var (
-	pullRegExp = regexp.MustCompile(`/images/create(\?fromImage=([^&]*)(&tag=(.*)?)?)?$`)
+	pullRegExp = regexp.MustCompile(`/images/create(\?fromImage=([^&]*)(&tag=(.*)?)?)?`)
 )
 
 type trustPlugin struct {
@@ -86,12 +84,12 @@ type trustPlugin struct {
 }
 
 func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response {
-	if req.RequestMethod == "POST" && pullRegExp.MatchString(req.RequestURI) {
-		decoded_url, err := url.QueryUnescape(req.RequestURI)
-		if err != nil {
-			return authorization.Response{Err: err.Error()}
-		}
-		res := pullRegExp.FindStringSubmatch(decoded_url)
+	decodedURL, err := url.QueryUnescape(req.RequestURI)
+	if err != nil {
+		return authorization.Response{Err: err.Error()}
+	}
+	if req.RequestMethod == "POST" && pullRegExp.MatchString(decodedURL) {
+		res := pullRegExp.FindStringSubmatch(decodedURL)
 		if len(res) < 5 {
 			return authorization.Response{Err: "unable to find repository name and reference"}
 		}
@@ -196,30 +194,7 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 					return authorization.Response{Err: fmt.Sprintf("digests mismatch, provided %s, computed %s", res[4], digest)}
 				}
 			} else {
-				if p.config.AutoPull {
-					newRef, err := reference.ParseNamed(res[2] + "@" + digest)
-					if err != nil {
-						return authorization.Response{Err: err.Error()}
-					}
-					// TODO(runcom): fix the last arg to provide authconfig and requestprivilegdfunc in the options
-					r, err := p.client.ImagePull(context.Background(), newRef.String(), engineapitypes.ImagePullOptions{})
-					if err != nil {
-						return authorization.Response{Err: err.Error()}
-					}
-					// Should wait for pull to finish streaming
-					_, err = ioutil.ReadAll(r)
-					if err != nil {
-						return authorization.Response{Err: err.Error()}
-					}
-					r.Close()
-
-					if err := p.client.ImageTag(context.Background(), newRef.String(), res[2]+":"+res[4]); err != nil {
-						return authorization.Response{Err: err.Error()}
-					}
-					goto allow
-				} else {
-					return authorization.Response{Err: fmt.Sprintf("image is allowed but can't pull by tag. Pull the image with 'docker pull %s@%s' and tag it with 'docker tag %s@%s %s:%s'", res[2], digest, res[2], digest, res[2], res[4])}
-				}
+				return authorization.Response{Err: fmt.Sprintf("image is allowed but can't pull by tag. Pull the image with 'docker pull %s@%s' and tag it with 'docker tag %s@%s %s:%s'", res[2], digest, res[2], digest, res[2], res[4])}
 			}
 		}
 		goto noallow
