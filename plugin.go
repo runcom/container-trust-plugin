@@ -175,6 +175,12 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 			return authorization.Response{Err: err.Error()}
 		}
 		allowed, err := pc.IsRunningImageAllowed(img)
+		if !allowed {
+			if err != nil {
+				return authorization.Response{Err: fmt.Sprintf("%s isn't allowed: %v", imgRef.DockerReference(), err)}
+			}
+			return authorization.Response{Err: fmt.Sprintf("%s isn't allowed", imgRef.DockerReference())}
+		}
 		if err != nil {
 			return authorization.Response{Err: err.Error()}
 		}

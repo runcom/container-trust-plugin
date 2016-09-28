@@ -1,10 +1,10 @@
 hash: e3d8c5290257c91027981a30769d32a844eb6da0b7f565ceae630107a8d3e01c
-updated: 2016-09-16T11:16:46.806147021+02:00
+updated: 2016-09-28T20:49:59.977724678+02:00
 imports:
 - name: github.com/cloudfoundry-incubator/candiedyaml
   version: 99c3df83b51532e3615f851d8c2dbb638f5313bf
 - name: github.com/containers/image
-  version: 2efc244b5ebdfe66b6a4377c6b405fe33e7dd948
+  version: c9ae51ba8ca297e3ed9c99a19a43a77b491427c7
   subpackages:
   - docker
   - signature
@@ -32,7 +32,7 @@ imports:
   - context
   - uuid
 - name: github.com/docker/docker
-  version: 23cf638307f030cd8d48c9efc21feec18a6f88f8
+  version: 45bed2cc80c242936d94817644783c997ee4c033
   subpackages:
   - api
   - reference
@@ -104,18 +104,18 @@ imports:
 - name: github.com/mtrmac/gpgme
   version: 7486dcd030936581e863bb69602ef411920d7fc9
 - name: github.com/opencontainers/image-spec
-  version: d1383212031d6f6aa55790a710cb04e29863741b
+  version: 0e2b3f183296b0dabf6ade381ca35d7ca4c3bfd1
   subpackages:
   - specs-go/v1
   - specs-go
 - name: github.com/opencontainers/runc
-  version: b1e602e8ba592a663a4eb63ed9c18d6b2b475fec
+  version: b3833a00e6d1709204ca1ff5fb5fc2284d42a129
   subpackages:
   - libcontainer/user
 - name: github.com/Sirupsen/logrus
   version: 4b6ea7319e214d98c938f12692336f7ca9348d6b
 - name: github.com/vbatts/tar-split
-  version: 6810cedb21b2c3d0b9bb8f9af12ff2dc7a2f14df
+  version: bd4c5d64c3e9297f410025a3b1bd0c58f659e721
   subpackages:
   - tar/asm
   - tar/storage
@@ -131,12 +131,14 @@ imports:
   - trace
   - proxy
 - name: golang.org/x/sys
-  version: 30de6d19a3bd89a5f38ae4028e23aaa5582648af
+  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
   subpackages:
   - unix
   - windows
+- name: gopkg.in/yaml.v2
+  version: bef53efd0c76e49e6de55ead051f886bea7e9420
 - name: k8s.io/kubernetes
-  version: c3374a0d49b892b858550fadb14fee87272db704
+  version: 11c532075054118d647250c4b4d5542a9ee7c937
   subpackages:
   - pkg/util/errors
   - pkg/util/homedir
