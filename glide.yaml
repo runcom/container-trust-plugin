@@ -1,4 +1,4 @@
-package: github.com/projectatomic/trust-plugin
+package: github.com/projectatomic/container-trust-plugin
 import:
 - package: github.com/Sirupsen/logrus
   version: ~0.10.0

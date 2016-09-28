@@ -1,0 +1,12 @@
+[Unit]
+Description=Docker Block untrusted pulls plugin
+Documentation=man:container-trust-plugin(8)
+After=network.target container-trust-plugin.socket
+Requires=container-trust-plugin.socket
+
+[Service]
+# might need to set flags...
+ExecStart=/usr/libexec/docker/container-trust-plugin
+
+[Install]
+WantedBy=multi-user.target

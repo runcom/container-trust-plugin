@@ -1,11 +1,11 @@
-% TRUST-PLUGIN(8)
+% CONTAINER-TRUST-PLUGIN(8)
 % Antonio Murdaca
 % MARCH 2016
 # NAME
-trust-plugin - Block pulls from untrusted registries
+container-trust-plugin - Block pulls from untrusted registries
 
 # SYNOPSIS
-**trust-plugin**
+**container-trust-plugin**
 [**--cert-path**=[=*""*]]
 [**--host**=[=*unix:///var/run/docker.sock*]]
 [**--tls-verify**=[=*false*]]

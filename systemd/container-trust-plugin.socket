@@ -1,9 +1,9 @@
 [Unit]
 Description=Docker Block untrusted pulls plugin Socket for the API
-Documentation=man:trust-plugin(8)
+Documentation=man:container-trust-plugin(8)
 
 [Socket]
-ListenStream=/run/docker/plugins/trust-plugin.sock
+ListenStream=/run/docker/plugins/container-trust-plugin.sock
 
 [Install]
 WantedBy=sockets.target

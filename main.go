@@ -9,7 +9,7 @@ import (
 
 const (
 	defaultDockerHost = "unix:///var/run/docker.sock"
-	pluginSocket      = "/run/docker/plugins/trust-plugin.sock"
+	pluginSocket      = "/run/docker/plugins/container-trust-plugin.sock"
 )
 
 var (

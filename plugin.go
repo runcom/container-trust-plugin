@@ -30,7 +30,7 @@ type conf struct {
 }
 
 const (
-	pluginConfPath = "/etc/docker/trust-plugin.yaml"
+	pluginConfPath = "/etc/docker/container-trust-plugin.yaml"
 )
 
 func newPlugin(dockerHost, certPath string, tlsVerify bool) (*trustPlugin, error) {
