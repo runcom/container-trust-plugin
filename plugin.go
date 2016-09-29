@@ -148,7 +148,7 @@ func (p *trustPlugin) AuthZReq(req authorization.Request) authorization.Response
 		//
 		// docker pull rhel/rhel7 # --add-registry=redhat.io --block-registry=public
 		// ref == redhat.io/rhel/rhel7
-		if !isReferenceFullyQualified && defaultRegistry != "" && defaultRegistry != "docker.io" {
+		if !isReferenceFullyQualified(ref) && defaultRegistry != "" && defaultRegistry != "docker.io" {
 			ref, err = qualifyUnqualifiedReference(ref, defaultRegistry)
 			if err != nil {
 				return authorization.Response{Err: err.Error()}
